@@ -20,16 +20,51 @@ public class TrainingSession {
     }
 
     // Getters y Setters
-    public int getTrainingSessionID() { return trainingSessionID; }
-    public void setTrainingSessionID(int trainingSessionID) { this.trainingSessionID = trainingSessionID; }
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getSport() { return sport; }
-    public void setSport(String sport) { this.sport = sport; }
-    public float getDistance() { return distance; }
-    public void setDistance(float distance) { this.distance = distance; }
-    public LocalDate getStartTime() { return startTime; }
-    public void setStartTime(LocalDate startTime) { this.startTime = startTime; }
-    public float getDuration() { return duration; }
-    public void setDuration(float duration) { this.duration = duration; }
+    public int getTrainingSessionID() {
+        return trainingSessionID;
+    }
+
+    public void setTrainingSessionID(int trainingSessionID) {
+        this.trainingSessionID = trainingSessionID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    public LocalDate getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDate startTime) {
+        this.startTime = startTime;
+    }
+
+    public float getDuration() {
+        return duration;
+    }
+
+    public void setDuration(float duration) {
+        this.duration = duration;
+    }
 }
