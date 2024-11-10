@@ -67,7 +67,7 @@ public class StravaAplicationService {
 
     public Challenge getChallengeById(String email, Long challengeId) {
         UserProfile profile = getUserProfileByEmail(email);
-        if (profile == null) {
+        if (profile != null) {
             for (Challenge challenge : profile.getChallenges()) {
                 if (challenge.getChallengeID() == challengeId) {
                     return challenge;
