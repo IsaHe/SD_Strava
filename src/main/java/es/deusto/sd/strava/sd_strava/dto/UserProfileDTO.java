@@ -1,9 +1,12 @@
-package es.deusto.sd.strava.sd_strava.entity;
+package es.deusto.sd.strava.sd_strava.dto;
+
+import es.deusto.sd.strava.sd_strava.entity.Challenge;
+import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class UserProfile {
+public class UserProfileDTO {
     private String email;
     private String name;
     private LocalDate birthdate;
@@ -11,14 +14,11 @@ public class UserProfile {
     private float height;
     private float maxHeartRate;
     private float restHeartRate;
-    private List<TrainingSession> trainingSessions;
-    private List<Challenge> challenges;
     private String registrationPlatformUsed;
-    private String token;
 
-    public UserProfile() {}
+    public UserProfileDTO() {}
 
-    public UserProfile(String email, String name, LocalDate birthdate, float weight, float height, float maxHeartRate, float restHeartRate, List<TrainingSession> trainingSessions, List<Challenge> challenges, String registrationPlatformUsed) {
+    public UserProfileDTO(String email, String name, LocalDate birthdate, float weight, float height, float maxHeartRate, float restHeartRate, String registrationPlatformUsed) {
         this.email = email;
         this.name = name;
         this.birthdate = birthdate;
@@ -26,13 +26,9 @@ public class UserProfile {
         this.height = height;
         this.maxHeartRate = maxHeartRate;
         this.restHeartRate = restHeartRate;
-        this.trainingSessions = trainingSessions;
-        this.challenges = challenges;
         this.registrationPlatformUsed = registrationPlatformUsed;
-        this.token = null;
     }
 
-    // Getters y Setters
     public String getEmail() {
         return email;
     }
@@ -95,29 +91,5 @@ public class UserProfile {
 
     public void setRegistrationPlatformUsed(String registrationPlatformUsed) {
         this.registrationPlatformUsed = registrationPlatformUsed;
-    }
-
-    public List<TrainingSession> getTrainingSessions() {
-        return trainingSessions;
-    }
-
-    public void setTrainingSessions(List<TrainingSession> trainingSessions) {
-        this.trainingSessions = trainingSessions;
-    }
-
-    public List<Challenge> getChallenges() {
-        return challenges;
-    }
-
-    public void setChallenges(List<Challenge> challenges) {
-        this.challenges = challenges;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }

@@ -1,8 +1,8 @@
-package es.deusto.sd.strava.sd_strava.entity;
+package es.deusto.sd.strava.sd_strava.dto;
 
 import java.time.LocalDate;
 
-public class Challenge {
+public class ChallengeDTO {
     private int challengeID;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -10,9 +10,9 @@ public class Challenge {
     private float target;
     private String sport;
 
-    public Challenge() {}
+    public ChallengeDTO() {}
 
-    public Challenge(int challengeID, LocalDate startDate, LocalDate endDate, String targetType, float target, String sport) {
+    public ChallengeDTO(int challengeID, LocalDate startDate, LocalDate endDate, String targetType, float target, String sport) {
         this.challengeID = challengeID;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -21,7 +21,6 @@ public class Challenge {
         this.sport = sport;
     }
 
-    // Getters y Setters
     public int getChallengeID() {
         return challengeID;
     }

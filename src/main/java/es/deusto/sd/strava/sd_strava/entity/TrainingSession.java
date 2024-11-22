@@ -10,6 +10,8 @@ public class TrainingSession {
     private LocalDate startTime;
     private float duration;
 
+    public TrainingSession() {}
+
     public TrainingSession(int trainingSessionID, String title, String sport, float distance, LocalDate startTime, float duration) {
         this.trainingSessionID = trainingSessionID;
         this.title = title;
