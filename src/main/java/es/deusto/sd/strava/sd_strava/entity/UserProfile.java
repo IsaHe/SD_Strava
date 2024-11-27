@@ -1,6 +1,7 @@
 package es.deusto.sd.strava.sd_strava.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfile {
@@ -16,9 +17,12 @@ public class UserProfile {
     private String registrationPlatformUsed;
     private String token;
 
-    public UserProfile() {}
+    public UserProfile() {
+        this.trainingSessions = new ArrayList<>();
+        this.challenges = new ArrayList<>();
+    }
 
-    public UserProfile(String email, String name, LocalDate birthdate, float weight, float height, float maxHeartRate, float restHeartRate, List<TrainingSession> trainingSessions, List<Challenge> challenges, String registrationPlatformUsed) {
+    public UserProfile(String email, String name, LocalDate birthdate, float weight, float height, float maxHeartRate, float restHeartRate, String registrationPlatformUsed) {
         this.email = email;
         this.name = name;
         this.birthdate = birthdate;
@@ -26,9 +30,9 @@ public class UserProfile {
         this.height = height;
         this.maxHeartRate = maxHeartRate;
         this.restHeartRate = restHeartRate;
-        this.trainingSessions = trainingSessions;
-        this.challenges = challenges;
         this.registrationPlatformUsed = registrationPlatformUsed;
+        this.trainingSessions = new ArrayList<>();
+        this.challenges = new ArrayList<>();
         this.token = null;
     }
 
