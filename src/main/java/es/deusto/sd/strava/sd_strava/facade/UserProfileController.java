@@ -6,13 +6,13 @@ import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
 import es.deusto.sd.strava.sd_strava.service.AuthService;
 import es.deusto.sd.strava.sd_strava.service.UserProfileService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;

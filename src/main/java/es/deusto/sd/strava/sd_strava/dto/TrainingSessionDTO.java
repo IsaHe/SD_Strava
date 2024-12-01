@@ -1,7 +1,5 @@
 package es.deusto.sd.strava.sd_strava.dto;
 
-import java.time.LocalDate;
-
 public class TrainingSessionDTO {
     private int trainingSessionID;
     private String title;

@@ -1,16 +1,15 @@
 package es.deusto.sd.strava.sd_strava.service;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-
+import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
+import es.deusto.sd.strava.sd_strava.entity.UserProfile;
 import es.deusto.sd.strava.sd_strava.external.FacebookGateway;
 import es.deusto.sd.strava.sd_strava.external.GoogleGateway;
 import org.springframework.stereotype.Service;
-
-import es.deusto.sd.strava.sd_strava.entity.UserProfile;
-import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthService {

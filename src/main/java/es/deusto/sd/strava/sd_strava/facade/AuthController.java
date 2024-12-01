@@ -1,7 +1,11 @@
 package es.deusto.sd.strava.sd_strava.facade;
 
-import java.util.Optional;
-
+import es.deusto.sd.strava.sd_strava.dto.CredentialsDTO;
+import es.deusto.sd.strava.sd_strava.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,12 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.deusto.sd.strava.sd_strava.dto.CredentialsDTO;
-import es.deusto.sd.strava.sd_strava.service.AuthService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")

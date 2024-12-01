@@ -1,18 +1,17 @@
 package es.deusto.sd.strava.sd_strava.service;
 
+import es.deusto.sd.strava.sd_strava.dao.TrainingSessionRepository;
+import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
 import es.deusto.sd.strava.sd_strava.dto.TrainingSessionDTO;
 import es.deusto.sd.strava.sd_strava.dto.UserProfileDTO;
 import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
-import es.deusto.sd.strava.sd_strava.dao.TrainingSessionRepository;
-import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

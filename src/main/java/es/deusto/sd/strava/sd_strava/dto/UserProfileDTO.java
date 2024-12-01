@@ -1,10 +1,6 @@
 package es.deusto.sd.strava.sd_strava.dto;
 
-import es.deusto.sd.strava.sd_strava.entity.Challenge;
-import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
-
 import java.time.LocalDate;
-import java.util.List;
 
 public class UserProfileDTO {
     private String email;

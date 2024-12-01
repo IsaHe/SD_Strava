@@ -6,7 +6,6 @@ import es.deusto.sd.strava.sd_strava.dto.ChallengeDTO;
 import es.deusto.sd.strava.sd_strava.entity.Challenge;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
