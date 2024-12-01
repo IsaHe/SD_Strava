@@ -1,34 +1,26 @@
-package es.deusto.sd.strava.sd_strava.entity;
-
-import jakarta.persistence.*;
+package es.deusto.sd.strava.sd_strava.dto;
 
 import java.time.LocalDate;
 
-@Entity
-public class TrainingSession {
+public class TrainingSessionDTO {
     private int trainingSessionID;
     private String title;
     private String sport;
     private float distance;
-    private LocalDate startTime;
+    private String startTime;
     private float duration;
+    private String userEmail;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public TrainingSessionDTO() {}
 
-    @ManyToOne
-    private UserProfile userProfile;
-
-    public TrainingSession() {}
-
-    public TrainingSession(int trainingSessionID, String title, String sport, float distance, LocalDate startTime, float duration, UserProfile userProfile) {
+    public TrainingSessionDTO(int trainingSessionID, String title, String sport, float distance, String startTime, float duration, String userEmail) {
         this.trainingSessionID = trainingSessionID;
         this.title = title;
         this.sport = sport;
         this.distance = distance;
         this.startTime = startTime;
         this.duration = duration;
+        this.userEmail = userEmail;
     }
 
     // Getters y Setters
@@ -64,11 +56,11 @@ public class TrainingSession {
         this.distance = distance;
     }
 
-    public LocalDate getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDate startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
@@ -80,19 +72,11 @@ public class TrainingSession {
         this.duration = duration;
     }
 
-    public UserProfile getUserProfile() {
-        return userProfile;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

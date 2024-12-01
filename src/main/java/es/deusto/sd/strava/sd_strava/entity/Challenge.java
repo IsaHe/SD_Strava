@@ -1,7 +1,11 @@
 package es.deusto.sd.strava.sd_strava.entity;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
+@Entity
 public class Challenge {
     private int challengeID;
     private LocalDate startDate;
@@ -9,6 +13,13 @@ public class Challenge {
     private String targetType;
     private float target;
     private String sport;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToMany(mappedBy = "challenges")
+    private List<UserProfile> users;
 
     public Challenge() {}
 
@@ -68,5 +79,21 @@ public class Challenge {
 
     public void setSport(String sport) {
         this.sport = sport;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<UserProfile> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserProfile> users) {
+        this.users = users;
     }
 }

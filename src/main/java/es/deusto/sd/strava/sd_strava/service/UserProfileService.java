@@ -1,12 +1,14 @@
 // UserProfileService.java
 package es.deusto.sd.strava.sd_strava.service;
 
+import es.deusto.sd.strava.sd_strava.dto.TrainingSessionDTO;
 import es.deusto.sd.strava.sd_strava.dto.UserProfileDTO;
 import es.deusto.sd.strava.sd_strava.entity.Challenge;
 import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,5 +59,29 @@ public class UserProfileService {
         profile.setRestHeartRate(profileDTO.getRestHeartRate());
         profile.setRegistrationPlatformUsed(profileDTO.getRegistrationPlatformUsed());
         return profile;
+    }
+
+    public TrainingSession convertToEntity(UserProfile userProfile, TrainingSessionDTO trainingSessionDTO) {
+        TrainingSession session = new TrainingSession();
+        session.setTrainingSessionID(trainingSessionDTO.getTrainingSessionID());
+        session.setTitle(trainingSessionDTO.getTitle());
+        session.setSport(trainingSessionDTO.getSport());
+        session.setDistance(trainingSessionDTO.getDistance());
+        session.setStartTime(LocalDate.parse(trainingSessionDTO.getStartTime()));
+        session.setDuration(trainingSessionDTO.getDuration());
+        session.setUserProfile(userProfile);
+        return session;
+    }
+
+    public TrainingSessionDTO convertToDTO(TrainingSession session) {
+        TrainingSessionDTO dto = new TrainingSessionDTO();
+        dto.setTrainingSessionID(session.getTrainingSessionID());
+        dto.setTitle(session.getTitle());
+        dto.setSport(session.getSport());
+        dto.setDistance(session.getDistance());
+        dto.setStartTime(session.getStartTime().toString());
+        dto.setDuration(session.getDuration());
+        dto.setUserEmail(session.getUserProfile().getEmail());
+        return dto;
     }
 }

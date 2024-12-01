@@ -1,7 +1,10 @@
 package es.deusto.sd.strava.sd_strava.facade;
 
+import es.deusto.sd.strava.sd_strava.dto.TrainingSessionDTO;
 import es.deusto.sd.strava.sd_strava.dto.UserProfileDTO;
+import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
+import es.deusto.sd.strava.sd_strava.service.AuthService;
 import es.deusto.sd.strava.sd_strava.service.UserProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +23,11 @@ import java.util.List;
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
+    private final AuthService authService;
 
-    public UserProfileController(UserProfileService userProfileService) {
+    public UserProfileController(UserProfileService userProfileService, AuthService authService) {
         this.userProfileService = userProfileService;
+        this.authService = authService;
     }
 
     @Operation(
@@ -73,6 +78,49 @@ public class UserProfileController {
         List<UserProfile> profiles = userProfileService.getAllUserProfiles();
         List<UserProfileDTO> dtos = new ArrayList<>();
         profiles.forEach(profile -> dtos.add(userProfileService.convertToDTO(profile)));
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @Operation(
+        summary = "Create a new training session",
+        description = "Allows creating a new training session for the user",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK: Training session created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        }
+    )
+    @PostMapping("/{token}/training-session")
+    public ResponseEntity<TrainingSessionDTO> createTrainingSession(
+            @PathVariable String token, @RequestBody TrainingSessionDTO trainingSessionDTO) {
+        UserProfile user = authService.getUserByToken(token);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        TrainingSession trainingSession = userProfileService.convertToEntity(user, trainingSessionDTO);
+        user.getTrainingSessions().add(trainingSession);
+        return new ResponseEntity<>(trainingSessionDTO, HttpStatus.OK);
+    }
+
+    @Operation(
+        summary = "Get training sessions by date range",
+        description = "Retrieves the list of training sessions within the specified date range",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK: Training sessions retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+        }
+    )
+    @GetMapping("/{token}/training-sessions")
+    public ResponseEntity<List<TrainingSessionDTO>> getTrainingSessionsByDateRange(
+            @PathVariable String token) {
+        UserProfile user = authService.getUserByToken(token);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<TrainingSession> trainingSessions = user.getTrainingSessions();
+        List<TrainingSessionDTO> dtos = new ArrayList<>();
+        trainingSessions.forEach(session -> dtos.add(userProfileService.convertToDTO(session)));
+
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 }

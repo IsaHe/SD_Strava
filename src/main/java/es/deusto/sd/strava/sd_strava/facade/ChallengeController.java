@@ -108,4 +108,23 @@ public class ChallengeController {
         challenges.forEach(challenge -> dtos.add(challengeService.convertToDTO(challenge)));
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
+
+    @Operation(
+        summary = "Accept a challenge",
+        description = "Allows a user to accept a challenge",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK: Challenge accepted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request: Challenge not accepted")
+        }
+    )
+    @PostMapping("/accept-challenge/{token}/{challengeId}")
+    public ResponseEntity<Void> acceptChallenge(@PathVariable String token, @PathVariable long challengeId) {
+        UserProfile user = authService.getUserByToken(token);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        user.getChallenges().add(challengeService.getChallengeById(challengeId));
+        challengeService.getChallengeById(challengeId).getUsers().add(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

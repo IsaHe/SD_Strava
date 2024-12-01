@@ -1,19 +1,34 @@
 package es.deusto.sd.strava.sd_strava.entity;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class UserProfile {
+    @Id
     private String email;
+
     private String name;
     private LocalDate birthdate;
     private float weight;
     private float height;
     private float maxHeartRate;
     private float restHeartRate;
+
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingSession> trainingSessions;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_challenges",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "challenge_id")
+    )
     private List<Challenge> challenges;
+
     private String registrationPlatformUsed;
     private String token;
 
