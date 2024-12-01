@@ -4,8 +4,11 @@ import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
 import es.deusto.sd.strava.sd_strava.external.FacebookGateway;
 import es.deusto.sd.strava.sd_strava.external.GoogleGateway;
+import es.deusto.sd.strava.sd_strava.external.IAuthPlatformGateway;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import es.deusto.sd.strava.sd_strava.Factory.AuthGatewayFactory;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,10 +19,11 @@ public class AuthService {
 
     private final Map<String, UserProfile> tokenStore = new ConcurrentHashMap<>();
     private final UserProfileRepository userProfileRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final AuthGatewayFactory authGatewayFactory;
 
-    public AuthService(UserProfileRepository userProfileRepository) {
+    public AuthService(UserProfileRepository userProfileRepository, AuthGatewayFactory authGatewayFactory) {
         this.userProfileRepository = userProfileRepository;
+        this.authGatewayFactory = authGatewayFactory;
     }
 
     public Optional<String> login(String email) {
@@ -29,15 +33,9 @@ public class AuthService {
         }
 
         String platform = user.getRegistrationPlatformUsed();
+        IAuthPlatformGateway gateway = authGatewayFactory.getGateway(platform);
 
-        String token;
-        if ("GOOGLE".equalsIgnoreCase(platform)) {
-            token = authenticateWithGoogle(email);
-        } else if ("FACEBOOK".equalsIgnoreCase(platform)) {
-            token = authenticateWithFacebook(email);
-        } else {
-            throw new IllegalArgumentException("Unknown registration platform: " + platform);
-        }
+        String token = gateway.authenticate(email);
 
         if (token != null) {
             tokenStore.put(token, user);
@@ -53,15 +51,5 @@ public class AuthService {
 
     public UserProfile getUserByToken(String token) {
         return tokenStore.get(token);
-    }
-
-    private String authenticateWithGoogle(String email) {
-        GoogleGateway googleGateway = new GoogleGateway();
-        return googleGateway.authenticate(email);
-    }
-
-    private String authenticateWithFacebook(String email) {
-        FacebookGateway facebookGateway = new FacebookGateway();
-        return facebookGateway.authenticate(email);
     }
 }

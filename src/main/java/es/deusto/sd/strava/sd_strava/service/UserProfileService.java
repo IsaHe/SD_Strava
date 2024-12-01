@@ -1,11 +1,13 @@
 package es.deusto.sd.strava.sd_strava.service;
 
+import es.deusto.sd.strava.sd_strava.Factory.AuthGatewayFactory;
 import es.deusto.sd.strava.sd_strava.dao.TrainingSessionRepository;
 import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
 import es.deusto.sd.strava.sd_strava.dto.TrainingSessionDTO;
 import es.deusto.sd.strava.sd_strava.dto.UserProfileDTO;
 import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
+import es.deusto.sd.strava.sd_strava.external.IAuthPlatformGateway;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -19,15 +21,18 @@ public class UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
     private final TrainingSessionRepository trainingSessionRepository;
+    private final AuthGatewayFactory authGatewayFactory;
 
-    public UserProfileService(UserProfileRepository userProfileRepository,
-                              TrainingSessionRepository trainingSessionRepository) {
+    public UserProfileService(UserProfileRepository userProfileRepository, TrainingSessionRepository trainingSessionRepository, AuthGatewayFactory authGatewayFactory) {
         this.userProfileRepository = userProfileRepository;
         this.trainingSessionRepository = trainingSessionRepository;
+        this.authGatewayFactory = authGatewayFactory;
     }
 
     // Gestión de usuarios
     public UserProfile registerUserProfile(UserProfile profile) {
+        IAuthPlatformGateway gateway = authGatewayFactory.getGateway(profile.getRegistrationPlatformUsed());
+        gateway.addUser(profile.getEmail(), profile.getName());
         return userProfileRepository.save(profile);
     }
 
