@@ -1,33 +1,33 @@
 // ChallengeService.java
 package es.deusto.sd.strava.sd_strava.service;
 
+import es.deusto.sd.strava.sd_strava.dao.ChallengeRepository;
 import es.deusto.sd.strava.sd_strava.dto.ChallengeDTO;
 import es.deusto.sd.strava.sd_strava.entity.Challenge;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChallengeService {
-    private final List<Challenge> challenges = new ArrayList<>();
+    private final ChallengeRepository challengeRepository;
 
-    public Challenge addChallenge(Challenge challenge) {
-        challenges.add(challenge);
-        return challenge;
+    public ChallengeService(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
     }
 
-    public Challenge getChallengeById(Long challengeId) {
-        for (Challenge challenge : challenges) {
-            if (challenge.getChallengeID() == challengeId) {
-                return challenge;
-            }
-        }
-        return null;
+    public Challenge addChallenge(Challenge challenge) {
+        return challengeRepository.save(challenge);
+    }
+
+    public Optional<Challenge> getChallengeById(Integer id) {
+        return challengeRepository.findById(id);
     }
 
     public List<Challenge> getAllChallenges() {
-        return new ArrayList<>(challenges);
+        return challengeRepository.findAll();
     }
 
     public ChallengeDTO convertToDTO(Challenge challenge) {

@@ -1,52 +1,68 @@
 package es.deusto.sd.strava.sd_strava.service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import es.deusto.sd.strava.sd_strava.entity.Challenge;
+import es.deusto.sd.strava.sd_strava.external.FacebookGateway;
+import es.deusto.sd.strava.sd_strava.external.GoogleGateway;
 import org.springframework.stereotype.Service;
 
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
+import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AuthService {
 
-    private static final Map<String, UserProfile> tokenStore = new HashMap<>();
-    private final UserProfileService userStore = new UserProfileService();
+    private final Map<String, UserProfile> tokenStore = new ConcurrentHashMap<>();
+    private final UserProfileRepository userProfileRepository;
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    public Optional<String> login(String email) {
-        UserProfile user = userStore.getUserProfileByEmail(email);
-
-        if (user != null) {
-            String token = generateToken();
-            tokenStore.put(token, user);
-            user.setToken(token);
-
-            return Optional.of(token);
-        } else {
-            return Optional.empty();
-        }
+    public AuthService(UserProfileRepository userProfileRepository) {
+        this.userProfileRepository = userProfileRepository;
     }
 
-    public Optional<Boolean> logout(String token) {
-        if (tokenStore.containsKey(token)) {
-            tokenStore.remove(token);
-            UserProfile user = userStore.getUserProfileByEmail(tokenStore.get(token).getEmail());
-            user.setToken(null);
-
-            return Optional.of(true);
-        } else {
+    public Optional<String> login(String email) {
+        UserProfile user = userProfileRepository.findByEmail(email).orElse(null);
+        if (user == null) {
             return Optional.empty();
         }
+
+        String platform = user.getRegistrationPlatformUsed();
+
+        String token;
+        if ("GOOGLE".equalsIgnoreCase(platform)) {
+            token = authenticateWithGoogle(email);
+        } else if ("FACEBOOK".equalsIgnoreCase(platform)) {
+            token = authenticateWithFacebook(email);
+        } else {
+            throw new IllegalArgumentException("Unknown registration platform: " + platform);
+        }
+
+        if (token != null) {
+            tokenStore.put(token, user);
+            return Optional.of(token);
+        }
+
+        return Optional.empty();
+    }
+
+    public boolean logout(String token) {
+        return tokenStore.remove(token) != null;
     }
 
     public UserProfile getUserByToken(String token) {
         return tokenStore.get(token);
     }
 
-    private static synchronized String generateToken() {
-        return Long.toHexString(System.currentTimeMillis());
+    private String authenticateWithGoogle(String email) {
+        GoogleGateway googleGateway = new GoogleGateway();
+        return googleGateway.authenticate(email);
     }
 
+    private String authenticateWithFacebook(String email) {
+        FacebookGateway facebookGateway = new FacebookGateway();
+        return facebookGateway.authenticate(email);
+    }
 }

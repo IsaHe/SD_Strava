@@ -1,38 +1,47 @@
-// UserProfileService.java
 package es.deusto.sd.strava.sd_strava.service;
 
 import es.deusto.sd.strava.sd_strava.dto.TrainingSessionDTO;
 import es.deusto.sd.strava.sd_strava.dto.UserProfileDTO;
-import es.deusto.sd.strava.sd_strava.entity.Challenge;
 import es.deusto.sd.strava.sd_strava.entity.TrainingSession;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
+import es.deusto.sd.strava.sd_strava.dao.TrainingSessionRepository;
+import es.deusto.sd.strava.sd_strava.dao.UserProfileRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserProfileService {
-    private static final List<UserProfile> userProfiles = new ArrayList<>();
 
+    private final UserProfileRepository userProfileRepository;
+    private final TrainingSessionRepository trainingSessionRepository;
+
+    public UserProfileService(UserProfileRepository userProfileRepository,
+                              TrainingSessionRepository trainingSessionRepository) {
+        this.userProfileRepository = userProfileRepository;
+        this.trainingSessionRepository = trainingSessionRepository;
+    }
+
+    // Gestión de usuarios
     public UserProfile registerUserProfile(UserProfile profile) {
-        userProfiles.add(profile);
-        return profile;
+        return userProfileRepository.save(profile);
     }
 
+    @Transactional
     public UserProfile getUserProfileByEmail(String email) {
-        for (UserProfile profile : userProfiles) {
-            if (profile.getEmail().equals(email)) {
-                return profile;
-            }
+        UserProfile user = userProfileRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            Hibernate.initialize(user.getTrainingSessions());
         }
-        return null;
-    }
+        return user;    }
 
     public List<UserProfile> getAllUserProfiles() {
-        return new ArrayList<>(userProfiles);
+        return userProfileRepository.findAll();
     }
 
     public UserProfileDTO convertToDTO(UserProfile profile) {
@@ -61,9 +70,43 @@ public class UserProfileService {
         return profile;
     }
 
+    @Transactional
+    public TrainingSession addTrainingSession(String userEmail, TrainingSessionDTO trainingSessionDTO) {
+        UserProfile user = userProfileRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        TrainingSession session = convertToEntity(user, trainingSessionDTO);
+        session.setUserProfile(user);
+        TrainingSession savedSession = trainingSessionRepository.save(session);
+
+        user.getTrainingSessions().add(savedSession);
+        userProfileRepository.save(user);
+
+        return savedSession;
+    }
+
+    public List<TrainingSessionDTO> getTrainingSessionsByUserEmail(String email) {
+        UserProfile user = userProfileRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user.getTrainingSessions().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<TrainingSessionDTO> getTrainingSessionsByDateRange(String email, LocalDate start, LocalDate end) {
+        UserProfile user = userProfileRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user.getTrainingSessions().stream()
+                .filter(session -> !session.getStartTime().isBefore(start) && !session.getStartTime().isAfter(end))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Conversión DTO - Entidad
     public TrainingSession convertToEntity(UserProfile userProfile, TrainingSessionDTO trainingSessionDTO) {
         TrainingSession session = new TrainingSession();
-        session.setTrainingSessionID(trainingSessionDTO.getTrainingSessionID());
         session.setTitle(trainingSessionDTO.getTitle());
         session.setSport(trainingSessionDTO.getSport());
         session.setDistance(trainingSessionDTO.getDistance());
@@ -75,7 +118,6 @@ public class UserProfileService {
 
     public TrainingSessionDTO convertToDTO(TrainingSession session) {
         TrainingSessionDTO dto = new TrainingSessionDTO();
-        dto.setTrainingSessionID(session.getTrainingSessionID());
         dto.setTitle(session.getTitle());
         dto.setSport(session.getSport());
         dto.setDistance(session.getDistance());

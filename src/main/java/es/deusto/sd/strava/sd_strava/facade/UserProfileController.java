@@ -96,8 +96,7 @@ public class UserProfileController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        TrainingSession trainingSession = userProfileService.convertToEntity(user, trainingSessionDTO);
-        user.getTrainingSessions().add(trainingSession);
+        userProfileService.addTrainingSession(user.getEmail(), trainingSessionDTO);
         return new ResponseEntity<>(trainingSessionDTO, HttpStatus.OK);
     }
 

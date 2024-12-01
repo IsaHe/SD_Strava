@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/challenges")
@@ -64,13 +65,9 @@ public class ChallengeController {
     @GetMapping("/{challengeId}")
     public ResponseEntity<ChallengeDTO> getChallengeById(
             @Parameter(description = "Challenge ID", required = true)
-            @PathVariable Long challengeId) {
-        Challenge challenge = challengeService.getChallengeById(challengeId);
-        if (challenge != null) {
-            return new ResponseEntity<>(challengeService.convertToDTO(challenge), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+            @PathVariable Integer challengeId) {
+        Optional<Challenge> challenge = challengeService.getChallengeById(challengeId);
+        return challenge.map(value -> new ResponseEntity<>(challengeService.convertToDTO(value), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @Operation(
@@ -118,13 +115,17 @@ public class ChallengeController {
         }
     )
     @PostMapping("/accept-challenge/{token}/{challengeId}")
-    public ResponseEntity<Void> acceptChallenge(@PathVariable String token, @PathVariable long challengeId) {
+    public ResponseEntity<Void> acceptChallenge(@PathVariable String token, @PathVariable Integer challengeId) {
         UserProfile user = authService.getUserByToken(token);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        user.getChallenges().add(challengeService.getChallengeById(challengeId));
-        challengeService.getChallengeById(challengeId).getUsers().add(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<Challenge> challenge = challengeService.getChallengeById(challengeId);
+        if (challenge.isPresent()) {
+            user.getChallenges().add(challenge.get());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }
