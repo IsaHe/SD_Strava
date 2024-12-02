@@ -48,6 +48,22 @@ public class UserProfileService {
         return userProfileRepository.findAll();
     }
 
+    @Transactional
+    public UserProfile getUserProfileWithTrainingSessions(String email) {
+        return userProfileRepository.findByEmailWithTrainingSessions(email).orElse(null);
+    }
+
+    @Transactional
+    public UserProfile getUserProfileWithChallenges(String email) {
+        return userProfileRepository.findByEmailWithChallenges(email).orElse(null);
+    }
+
+    @Transactional
+    public void saveUserProfile(UserProfile userProfile) {
+        userProfileRepository.save(userProfile);
+    }
+
+
     public UserProfileDTO convertToDTO(UserProfile profile) {
         UserProfileDTO dto = new UserProfileDTO();
         dto.setEmail(profile.getEmail());

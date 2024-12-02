@@ -97,29 +97,36 @@ public class UserProfileController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         userProfileService.addTrainingSession(user.getEmail(), trainingSessionDTO);
+        userProfileService.saveUserProfile(user);
         return new ResponseEntity<>(trainingSessionDTO, HttpStatus.OK);
     }
 
     @Operation(
-        summary = "Get training sessions by date range",
-        description = "Retrieves the list of training sessions within the specified date range",
+        summary = "Get training sessions",
+        description = "Retrieves the list of training sessions for the user",
         responses = {
             @ApiResponse(responseCode = "200", description = "OK: Training sessions retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request: Invalid input data")
+                @ApiResponse(responseCode = "401", description = "Unauthorized: Invalid token, access denied")
         }
     )
     @GetMapping("/{token}/training-sessions")
-    public ResponseEntity<List<TrainingSessionDTO>> getTrainingSessionsByDateRange(
+    public ResponseEntity<List<TrainingSessionDTO>> getTrainingSessions(
             @PathVariable String token) {
         UserProfile user = authService.getUserByToken(token);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        List<TrainingSession> trainingSessions = user.getTrainingSessions();
-        List<TrainingSessionDTO> dtos = new ArrayList<>();
-        trainingSessions.forEach(session -> dtos.add(userProfileService.convertToDTO(session)));
+        user = userProfileService.getUserProfileWithTrainingSessions(user.getEmail());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        List<TrainingSessionDTO> sessionDTOs = user.getTrainingSessions().stream()
+                .map(userProfileService::convertToDTO)
+                .toList();
+
+        return new ResponseEntity<>(sessionDTOs, HttpStatus.OK);
     }
+
 }

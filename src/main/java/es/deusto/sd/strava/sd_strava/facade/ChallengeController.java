@@ -5,6 +5,7 @@ import es.deusto.sd.strava.sd_strava.entity.Challenge;
 import es.deusto.sd.strava.sd_strava.entity.UserProfile;
 import es.deusto.sd.strava.sd_strava.service.AuthService;
 import es.deusto.sd.strava.sd_strava.service.ChallengeService;
+import es.deusto.sd.strava.sd_strava.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,10 +25,12 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
     private final AuthService authService;
+    private final UserProfileService userProfileService;
 
-    public ChallengeController(ChallengeService challengeService, AuthService autService) {
+    public ChallengeController(ChallengeService challengeService, AuthService autService, UserProfileService userProfileService) {
         this.challengeService = challengeService;
         this.authService = autService;
+        this.userProfileService = userProfileService;
     }
 
     @Operation(
@@ -48,8 +51,16 @@ public class ChallengeController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        user = userProfileService.getUserProfileWithChallenges(user.getEmail());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         Challenge addedChallenge = challengeService.addChallenge(challengeService.convertToEntity(challengeDTO));
         user.getChallenges().add(addedChallenge);
+
+        userProfileService.saveUserProfile(user);
         return new ResponseEntity<>(challengeService.convertToDTO(addedChallenge), HttpStatus.OK);
     }
 
@@ -99,10 +110,16 @@ public class ChallengeController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        List<Challenge> challenges = user.getChallenges();
-        List<ChallengeDTO> dtos = new ArrayList<>();
-        challenges.forEach(challenge -> dtos.add(challengeService.convertToDTO(challenge)));
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        user = userProfileService.getUserProfileWithChallenges(user.getEmail());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<ChallengeDTO> challengeDTOs = user.getChallenges().stream()
+                .map(challengeService::convertToDTO)
+                .toList();
+
+        return new ResponseEntity<>(challengeDTOs, HttpStatus.OK);
     }
 
     @Operation(
