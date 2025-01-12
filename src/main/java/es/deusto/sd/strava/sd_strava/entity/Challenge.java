@@ -34,7 +34,7 @@ public class Challenge {
 
     // Getters y Setters
     public int getChallengeID() {
-        return challengeID;
+        return Math.toIntExact(id);
     }
 
     public void setChallengeID(int challengeID) {

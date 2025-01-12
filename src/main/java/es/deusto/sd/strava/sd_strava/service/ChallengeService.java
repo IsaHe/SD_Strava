@@ -29,7 +29,7 @@ public class ChallengeService {
         return challengeRepository.findAll();
     }
 
-    public ChallengeDTO convertToDTO(Challenge challenge) {
+    public ChallengeDTO  convertToDTO(Challenge challenge) {
         ChallengeDTO dto = new ChallengeDTO();
         dto.setChallengeID(challenge.getChallengeID());
         dto.setStartDate(challenge.getStartDate());

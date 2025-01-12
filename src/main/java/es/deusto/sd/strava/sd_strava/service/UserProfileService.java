@@ -59,6 +59,11 @@ public class UserProfileService {
     }
 
     @Transactional
+    public UserProfile getUserWithChallengesByEmail(String email) {
+        return userProfileRepository.findByEmailWithChallenges(email).orElse(null);
+    }
+
+    @Transactional
     public void saveUserProfile(UserProfile userProfile) {
         userProfileRepository.save(userProfile);
     }
@@ -138,12 +143,12 @@ public class UserProfileService {
 
     public TrainingSessionDTO convertToDTO(TrainingSession session) {
         TrainingSessionDTO dto = new TrainingSessionDTO();
+        dto.setTrainingSessionID(Math.toIntExact(session.getId()));
         dto.setTitle(session.getTitle());
         dto.setSport(session.getSport());
         dto.setDistance(session.getDistance());
         dto.setStartTime(session.getStartTime().toString());
         dto.setDuration(session.getDuration());
-        dto.setUserEmail(session.getUserProfile().getEmail());
         return dto;
     }
 }

@@ -123,12 +123,12 @@ public class ChallengeController {
     }
 
     @Operation(
-        summary = "Accept a challenge",
-        description = "Allows a user to accept a challenge",
-        responses = {
-            @ApiResponse(responseCode = "200", description = "OK: Challenge accepted successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request: Challenge not accepted")
-        }
+            summary = "Accept a challenge",
+            description = "Allows a user to accept a challenge",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK: Challenge accepted successfully"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request: Challenge not accepted")
+            }
     )
     @PostMapping("/accept-challenge/{token}/{challengeId}")
     public ResponseEntity<Void> acceptChallenge(@PathVariable String token, @PathVariable Integer challengeId) {
@@ -136,12 +136,20 @@ public class ChallengeController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        user = userProfileService.getUserWithChallengesByEmail(user.getEmail());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         Optional<Challenge> challenge = challengeService.getChallengeById(challengeId);
         if (challenge.isPresent()) {
             user.getChallenges().add(challenge.get());
+            userProfileService.saveUserProfile(user); // Guardar los cambios
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
 }

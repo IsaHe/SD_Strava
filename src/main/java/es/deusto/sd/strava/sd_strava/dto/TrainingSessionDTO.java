@@ -7,18 +7,16 @@ public class TrainingSessionDTO {
     private float distance;
     private String startTime;
     private float duration;
-    private String userEmail;
 
     public TrainingSessionDTO() {}
 
-    public TrainingSessionDTO(int trainingSessionID, String title, String sport, float distance, String startTime, float duration, String userEmail) {
+    public TrainingSessionDTO(int trainingSessionID, String title, String sport, float distance, String startTime, float duration) {
         this.trainingSessionID = trainingSessionID;
         this.title = title;
         this.sport = sport;
         this.distance = distance;
         this.startTime = startTime;
         this.duration = duration;
-        this.userEmail = userEmail;
     }
 
     // Getters y Setters
@@ -68,13 +66,5 @@ public class TrainingSessionDTO {
 
     public void setDuration(float duration) {
         this.duration = duration;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
     }
 }
