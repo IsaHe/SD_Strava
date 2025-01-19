@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 @Entity
 public class TrainingSession {
-    private int trainingSessionID;
     private String title;
     private String sport;
     private float distance;
@@ -22,23 +21,16 @@ public class TrainingSession {
 
     public TrainingSession() {}
 
-    public TrainingSession(int trainingSessionID, String title, String sport, float distance, LocalDate startTime, float duration, UserProfile userProfile) {
-        this.trainingSessionID = trainingSessionID;
+    public TrainingSession(String title, String sport, float distance, LocalDate startTime, float duration, UserProfile userProfile) {
         this.title = title;
         this.sport = sport;
         this.distance = distance;
         this.startTime = startTime;
         this.duration = duration;
+        this.userProfile = userProfile;
     }
 
     // Getters y Setters
-    public int getTrainingSessionID() {
-        return trainingSessionID;
-    }
-
-    public void setTrainingSessionID(int trainingSessionID) {
-        this.trainingSessionID = trainingSessionID;
-    }
 
     public String getTitle() {
         return title;

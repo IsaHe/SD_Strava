@@ -152,4 +152,26 @@ public class ChallengeController {
         }
     }
 
+    @Operation(
+        summary = "Get challenge progress",
+        description = "Gets the progress of the specified challenge for the user",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "OK: Challenge progress retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Not Found: Challenge or user not found")
+        }
+    )
+    @GetMapping("/progress/{token}/{challengeId}")
+    public ResponseEntity<Boolean> getChallengeProgress(
+            @Parameter(description = "Authorization token", required = true)
+            @PathVariable String token,
+            @Parameter(description = "Challenge ID", required = true)
+            @PathVariable Integer challengeId) {
+        UserProfile user = authService.getUserByToken(token);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity<>(challengeService.getChallengeProgress(user.getEmail(), challengeId), HttpStatus.OK);
+    }
+
 }

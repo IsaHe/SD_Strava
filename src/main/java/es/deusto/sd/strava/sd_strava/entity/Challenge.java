@@ -3,11 +3,11 @@ package es.deusto.sd.strava.sd_strava.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Challenge {
-    private int challengeID;
     private LocalDate startDate;
     private LocalDate endDate;
     private String targetType;
@@ -23,22 +23,19 @@ public class Challenge {
 
     public Challenge() {}
 
-    public Challenge(int challengeID, LocalDate startDate, LocalDate endDate, String targetType, float target, String sport) {
-        this.challengeID = challengeID;
+    public Challenge(LocalDate startDate, LocalDate endDate, String targetType, float target, String sport) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.targetType = targetType;
         this.target = target;
         this.sport = sport;
+
+        users = new ArrayList<>();
     }
 
     // Getters y Setters
     public int getChallengeID() {
         return Math.toIntExact(id);
-    }
-
-    public void setChallengeID(int challengeID) {
-        this.challengeID = challengeID;
     }
 
     public LocalDate getStartDate() {
