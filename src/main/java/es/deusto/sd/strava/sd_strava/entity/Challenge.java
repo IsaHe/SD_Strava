@@ -93,4 +93,21 @@ public class Challenge {
     public void setUsers(List<UserProfile> users) {
         this.users = users;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Challenge challenge = (Challenge) obj;
+        return id.equals(challenge.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }
