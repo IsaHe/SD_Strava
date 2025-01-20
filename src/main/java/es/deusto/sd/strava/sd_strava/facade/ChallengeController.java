@@ -145,7 +145,7 @@ public class ChallengeController {
         Optional<Challenge> challenge = challengeService.getChallengeById(challengeId);
         if (challenge.isPresent()) {
             user.getChallenges().add(challenge.get());
-            userProfileService.saveUserProfile(user); // Guardar los cambios
+            userProfileService.saveUserProfile(user);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
